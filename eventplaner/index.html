@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Eventplaner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script>
+    // Prüfe ob der Nutzer eingeloggt ist
+    fetch("check_login.php")
+      .then(res => {
+        if (!res.ok) {
+          window.location.href = "auth.html";
+        }
+      });
+
+    // Lade Benutzername
+    async function ladeBenutzername() {
+      const res = await fetch("get_user.php");
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById("userDisplay").textContent = ` ${user.username}`;
+      }
+    }
+
+    ladeBenutzername();
+  </script>
+
+  <!-- Benutzeranzeige oben rechts -->
+  <div class="user-info">
+    <span id="userDisplay"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="wrapper">
+    <div class="panel form-panel">
+      <h1>Neuer Event</h1>
+      <form id="eventForm">
+        <input type="hidden" id="eventId">
+        <label>Datum: <input type="date" id="datum" required></label>
+        <label>Uhrzeit: <input type="time" id="uhrzeit" required></label>
+        <label>Ort: <input type="text" id="ort" required></label>
+        <label>Beschreibung: <textarea id="beschreibung" required></textarea></label>
+        <button type="submit">Speichern</button>
+      </form>      
+    </div>
+    
+    <div class="panel list-panel">
+      <h2>Meine Events</h2>
+      <div id="eventListe"></div>
+
+      <h2>Eingeladen zu</h2>
+      <div id="invitedListe"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    async function logout() {
+      await fetch("logout.php");
+      window.location.href = "auth.html";
+    }
+  </script>
+</body>
+</html>
